@@ -10,10 +10,10 @@
 //// - Random Word Is Choosen according to condition And It Is put Into Avariable that is appended to "the word"
 //// - Score
 //// - Time Start
-// - If Time Value Is Zero The Result Is Compared between Input Field And The Word
+////- If Time Value Is Zero The Result Is Compared between Input Field And The Word
 // * According To Result (if condition)
-// - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
-// - If False : Random Word Is Back To Words Array and False Result Is Written
+//// - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
+//// - If False : Random Word Is Back To Words Array and False Result Is Written
 // * If Data Array Is Empty
 // - Play Again Function btn Is Generated : Pushes All Elements Of Achieved To Words Local Storage Array Again And Play Again and Btn Is Hidden
 
@@ -66,8 +66,8 @@ function initializeGame() {
 initializeGame();
 // [2] Appending Words To Body
 let wordsParent = document.querySelector(".up-coming-words");
-function appedningWords() {
-  let gameState = JSON.parse(localStorage.getItem("gameState"));
+function appendingWords() {
+  var gameState = JSON.parse(localStorage.getItem("gameState"));
   console.log(gameState.wordsArray);
   gameState.wordsArray.forEach(function (e) {
     let span = document.createElement("span");
@@ -76,7 +76,7 @@ function appedningWords() {
   });
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
-appedningWords();
+appendingWords();
 //*
 // Storing Local Storages Array State Into Variable
 let dataStored = window.localStorage.getItem("words");
@@ -122,14 +122,16 @@ function theGame() {
   forMessage();
   //* Events
   startBtn.addEventListener("click", function () {
+    // Clear Input Field
+    inputField.value = ""
     // Remove show Class From Result If Player Already Played And Wrote Wrong Answer
     result.classList.remove("show");
     // Focus On Input Field
     inputField.focus();
     // - Random Word Is Choosen according to condition (6 - 8 - 9) And It Is put Into Avariable that is appended to "the word"
     function getRandomWord(lvl) {
-      let gameState = JSON.parse(localStorage.getItem("gameState"));
-      let wordsArray = gameState.wordsArray;
+      gameState = JSON.parse(localStorage.getItem("gameState"));
+      wordsArray = gameState.wordsArray;
 
       let filteredWords = wordsArray.filter((word) => {
         if (lvl === "Easy") {
@@ -149,51 +151,8 @@ function theGame() {
         return null;
       }
     }
-    let theWord = getRandomWord(lvl.textContent);
-    // function randomWord() {
-    //   let gameState = JSON.parse(localStorage.getItem("gameState"));
-    //   let wordsArray = gameState.wordsArray;
-    //   //* Declaration Of Cases
-    //   const sixLetterWords = wordsArray.filter((word) => word.length === 6);
-    //   const eightLetterWords = wordsArray.filter((word) => word.length === 8);
-    //   const nineLetterWords = wordsArray.filter((word) => word.length === 9);
-    //   //*********************************/
-    //   // Getting Random Word From sixLetterWords
-    //   if (sixLetterWords.length > 0) {
-    //     // Random Index
-    //     let randomIndex = Math.floor(Math.random() * sixLetterWords.length);
-    //     // Random Word With 6 Letters
-    //     let randomSixLetterWord = sixLetterWords[randomIndex];
-    //     theWord.textContent = `${randomSixLetterWord}`;
-    //     // Random Word From eightLetterWords
-    //   } else if (eightLetterWords.length > 0) {
-    //     // Random Index
-    //     let randomIndex = Math.floor(Math.random() * eightLetterWords.length);
-    //     // Random Word With 8 Letters
-    //     let randomEightLetterWord = eightLetterWords[randomIndex];
-    //     theWord.textContent = `${randomEightLetterWord}`;
-    //     // Getting Random Word From nineLetterWords
-    //   } else if (nineLetterWords.length > 0) {
-    //     // Random Index
-    //     let randomIndex = Math.floor(Math.random() * nineLetterWords.length);
-    //     // Random Word With 6 Letters
-    //     let randomNineLetterWord = nineLetterWords[randomIndex];
-    //     theWord.textContent = `${randomNineLetterWord}`;
-    //   } else if (wordsArray.length === 0) {
-    //     // Front Side
-    //     congrat.classList.add("show");
-    //     playAgain.classList.add("show");
-    //     // Back Side
-    //     playAgain.addEventListener("click", function () {
-    //       wordsArray.push(...achievedArray);
-    //       achievedArray = [];
-    //       congrat.classList.remove("show");
-    //       playAgain.classList.remove("show");
-    //     });
-    //   }
-    //   localStorage.setItem("gameState", JSON.stringify(gameState));
-    // }
-    // randomWord();
+    theWord.textContent = getRandomWord(lvl.textContent);
+    console.log(theWord.textContent)
     // - Time Start
     let counter = function () {
       timeLeft.innerHTML -= 1;
@@ -207,21 +166,23 @@ function theGame() {
         // - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
         // - If False : Random Word Is Back To Words Array and False Result Is Written
         if (
-          theWord.textContent.trim().toUpperCase() ===
-          inputField.value.trim().toUpperCase()
+          theWord.textContent.toUpperCase().trim() ===
+          inputField.value.toUpperCase().trim()
         ) {
-          let gameState = JSON.parse(localStorage.getItem("gameState"));
-          let wordsArray = gameState.wordsArray;
+          var gameState = JSON.parse(localStorage.getItem("gameState"));
+          var wordsArray = gameState.wordsArray;
+          var achievedWords = gameState.achievedWords;
           // Back Side
-          let index = wordsArray.indexOf(theWord);
+          var index = wordsArray.indexOf(theWord.textContent);
+          achievedWords.push(`${wordsArray[index]}`)
+          wordsArray.splice(index, 1)
+          localStorage.setItem("gameState", JSON.stringify(gameState));
           // *****
-          console.log(index);
-          console.log(wordsArray[index]);
-          // *****
-          // achievedWords.push(wordsArray[index]);
-          // wordsArray.splice(index, 1);
-          // localStorage.setItem("gameState", JSON.stringify(gameState));
           // Front Side
+          var gameState = JSON.parse(localStorage.getItem("gameState"));
+          var wordsArray = gameState.wordsArray;
+          var achievedWords = gameState.achievedWords;
+          got.textContent = `${achievedWords.length} `;
           result.classList.add("true");
           result.classList.add("show");
           result.textContent = "True";
@@ -246,3 +207,4 @@ function theGame() {
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 theGame();
+// The End
