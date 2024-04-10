@@ -140,4 +140,54 @@
 .game .control span {
   color: var(--main-color);
 }
+.game .congrat {
+  cursor: pointer;
+  padding: 1.1rem;
+  background-color: rgb(23, 146, 39);
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 21px;
+  transition: 0.3s ease all;
+  border-radius: 0.3rem;
+  margin-bottom: 0.3rem;
+  display: none;
+}
+.game .result {
+  cursor: pointer;
+  padding: 1.1rem;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 21px;
+  transition: 0.3s ease all;
+  border-radius: 0.3rem;
+  margin-bottom: 0.3rem;
+  display: none;
+}
+.game .result.true {
+  background-color: rgb(23, 146, 39);
+}
+.game .result.false {
+  background-color: rgba(255, 0, 0, 0.774);
+}
+.game .playAgain {
+  cursor: pointer;
+  padding: 1.1rem;
+  background-color: rgba(255, 0, 0, 0.774);
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 21px;
+  transition: 0.3s ease all;
+  border-radius: 0.3rem;
+  margin-bottom: 0.3rem;
+  display: none;
+}
+.game .playAgain:hover {
+  background-color: rgba(255, 0, 0, 0.651);
+}
+.show {
+  display: block !important;
+}
 /* End TG */

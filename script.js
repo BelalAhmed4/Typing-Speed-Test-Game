@@ -18,39 +18,72 @@
 // - Play Again Function btn Is Generated : Pushes All Elements Of Achieved To Words Local Storage Array Again And Play Again and Btn Is Hidden
 
 // [1] Creating Words Data
-let upComingWords = [
-  "banana",
-  "purple",
-  "rocket",
-  "guitar",
-  "cookie",
-  "elephant",
-  "mountain",
-  "computer",
-  "raindrop",
-  "triangle",
-  "beautiful",
-  "landscape",
-  "telephone",
-  "something",
-  "sunflower",
-];
-let achievedWords = [];
+// let upComingWords = [
+//   "banana",
+//   "purple",
+//   "rocket",
+//   "guitar",
+//   "cookie",
+//   "elephant",
+//   "mountain",
+//   "computer",
+//   "raindrop",
+//   "triangle",
+//   "beautiful",
+//   "landscape",
+//   "telephone",
+//   "something",
+//   "sunflower",
+// ];
+
+// [2] Initializing GameState
+function initializeGame() {
+  let gameState = JSON.parse(localStorage.getItem("gameState"));
+  if (!gameState) {
+    gameState = {
+      wordsArray: [
+        "banana",
+        "purple",
+        "rocket",
+        "guitar",
+        "cookie",
+        "elephant",
+        "mountain",
+        "computer",
+        "raindrop",
+        "triangle",
+        "beautiful",
+        "landscape",
+        "telephone",
+        "something",
+        "sunflower",
+      ],
+      achievedWords: [],
+    };
+  }
+  localStorage.setItem("gameState", JSON.stringify(gameState));
+}
+initializeGame();
 // [2] Appending Words To Body
 let wordsParent = document.querySelector(".up-coming-words");
 function appedningWords() {
-  upComingWords.forEach(function (e) {
+  let gameState = JSON.parse(localStorage.getItem("gameState"));
+  console.log(gameState.wordsArray);
+  gameState.wordsArray.forEach(function (e) {
     let span = document.createElement("span");
     span.textContent = `${e}`;
     wordsParent.appendChild(span);
   });
+  localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 appedningWords();
-// [3] Creating Local Storages
-window.localStorage.setItem("words", JSON.stringify(upComingWords));
-// [4] Achieved Words Location
-window.localStorage.setItem("achievedWords", JSON.stringify(achievedWords));
-// [5] theGame Function
+//*
+// Storing Local Storages Array State Into Variable
+let dataStored = window.localStorage.getItem("words");
+let dataArray = JSON.parse(dataStored);
+let achievedStored = window.localStorage.getItem("achievedWords");
+let achievedArray = JSON.parse(achievedStored);
+// [4] theGame Function
 function theGame() {
   //* Getting Needed Elements
   let startBtn = document.querySelector(".start");
@@ -61,91 +94,155 @@ function theGame() {
   let got = document.querySelector(".got");
   let total = document.querySelector(".total");
   let timeLeft = document.querySelector(".timeLeft");
-  //*
-  let dataStored = window.localStorage.getItem("words");
-  let dataArray = JSON.parse(dataStored);
+  let result = document.querySelector(".result");
+  let congrat = document.querySelector(".congrat");
+  let playAgain = document.querySelector(".playAgain");
   //* Checking Level Through Minumum Word Length And According To Level Message Settings Is Set And Timeout Is Set
   // Message Settings
   function forMessage() {
-    for (let i = 0; i < dataArray.length; i++) {
-      if (dataArray[i].length == 6) {
+    let gameState = JSON.parse(localStorage.getItem("gameState"));
+    let wordsArray = gameState.wordsArray;
+    for (let i = 0; i < wordsArray.length; i++) {
+      if (wordsArray[i].length == 6) {
         lvl.textContent = `Easy`;
-        seconds.textContent = `3`;
+        seconds.textContent = `6`;
         break;
-      } else if (dataArray[i].length == 8) {
+      } else if (wordsArray[i].length == 8) {
         lvl.textContent = `Medium`;
-        seconds.textContent = `4`;
+        seconds.textContent = `7`;
         break;
-      } else if (dataArray[i].length == 9) {
+      } else if (wordsArray[i].length == 9) {
         lvl.textContent = `Hard`;
-        seconds.textContent = `4`;
+        seconds.textContent = `8`;
         break;
       }
     }
+    localStorage.setItem("gameState", JSON.stringify(gameState));
   }
   forMessage();
   //* Events
   startBtn.addEventListener("click", function () {
+    // Remove show Class From Result If Player Already Played And Wrote Wrong Answer
+    result.classList.remove("show");
     // Focus On Input Field
     inputField.focus();
     // - Random Word Is Choosen according to condition (6 - 8 - 9) And It Is put Into Avariable that is appended to "the word"
-    function randomWord() {
-      //* Declaration Of Cases
-      const sixLetterWords = dataArray.filter((word) => word.length === 6);
-      const eightLetterWords = dataArray.filter((word) => word.length === 8);
-      const nineLetterWords = dataArray.filter((word) => word.length === 9);
-      //*********************************/
-      // Getting Random Word From sixLetterWords
-      if (sixLetterWords.length > 0) {
-        // Random Index
-        let randomIndex = Math.floor(Math.random() * sixLetterWords.length);
-        // Random Word With 6 Letters
-        let randomSixLetterWord = sixLetterWords[randomIndex];
-        theWord.textContent = `${randomSixLetterWord}`;
-        // Getting Random Word From eightLetterWords
-      } else if (eightLetterWords.length > 0) {
-        // Random Index
-        let randomIndex = Math.floor(Math.random() * eightLetterWords.length);
-        // Random Word With 8 Letters
-        let randomEightLetterWord = eightLetterWords[randomIndex];
-        theWord.textContent = `${randomEightLetterWord}`;
-        // Getting Random Word From nineLetterWords
-      } else if (nineLetterWords.length > 0) {
-        // Random Index
-        let randomIndex = Math.floor(Math.random() * nineLetterWords.length);
-        // Random Word With 6 Letters
-        let randomNineLetterWord = nineLetterWords[randomIndex];
-        theWord.textContent = `${randomNineLetterWord}`;
+    function getRandomWord(lvl) {
+      let gameState = JSON.parse(localStorage.getItem("gameState"));
+      let wordsArray = gameState.wordsArray;
+
+      let filteredWords = wordsArray.filter((word) => {
+        if (lvl === "Easy") {
+          return word.length === 6;
+        } else if (lvl === "Medium") {
+          return word.length === 8;
+        } else if (lvl === "Hard") {
+          return word.length === 9;
+        }
+      });
+
+      if (filteredWords.length > 0) {
+        let randomIndex = Math.floor(Math.random() * filteredWords.length);
+        return filteredWords[randomIndex];
+      } else {
+        // Handle the case when no words match the level
+        return null;
       }
     }
-    randomWord();
+    let theWord = getRandomWord(lvl.textContent);
+    // function randomWord() {
+    //   let gameState = JSON.parse(localStorage.getItem("gameState"));
+    //   let wordsArray = gameState.wordsArray;
+    //   //* Declaration Of Cases
+    //   const sixLetterWords = wordsArray.filter((word) => word.length === 6);
+    //   const eightLetterWords = wordsArray.filter((word) => word.length === 8);
+    //   const nineLetterWords = wordsArray.filter((word) => word.length === 9);
+    //   //*********************************/
+    //   // Getting Random Word From sixLetterWords
+    //   if (sixLetterWords.length > 0) {
+    //     // Random Index
+    //     let randomIndex = Math.floor(Math.random() * sixLetterWords.length);
+    //     // Random Word With 6 Letters
+    //     let randomSixLetterWord = sixLetterWords[randomIndex];
+    //     theWord.textContent = `${randomSixLetterWord}`;
+    //     // Random Word From eightLetterWords
+    //   } else if (eightLetterWords.length > 0) {
+    //     // Random Index
+    //     let randomIndex = Math.floor(Math.random() * eightLetterWords.length);
+    //     // Random Word With 8 Letters
+    //     let randomEightLetterWord = eightLetterWords[randomIndex];
+    //     theWord.textContent = `${randomEightLetterWord}`;
+    //     // Getting Random Word From nineLetterWords
+    //   } else if (nineLetterWords.length > 0) {
+    //     // Random Index
+    //     let randomIndex = Math.floor(Math.random() * nineLetterWords.length);
+    //     // Random Word With 6 Letters
+    //     let randomNineLetterWord = nineLetterWords[randomIndex];
+    //     theWord.textContent = `${randomNineLetterWord}`;
+    //   } else if (wordsArray.length === 0) {
+    //     // Front Side
+    //     congrat.classList.add("show");
+    //     playAgain.classList.add("show");
+    //     // Back Side
+    //     playAgain.addEventListener("click", function () {
+    //       wordsArray.push(...achievedArray);
+    //       achievedArray = [];
+    //       congrat.classList.remove("show");
+    //       playAgain.classList.remove("show");
+    //     });
+    //   }
+    //   localStorage.setItem("gameState", JSON.stringify(gameState));
+    // }
+    // randomWord();
     // - Time Start
     let counter = function () {
       timeLeft.innerHTML -= 1;
       if (timeLeft.textContent === "0") {
         clearInterval(handler);
+        startBtn.onclick = () => {
+          timeLeft.textContent = `${seconds.textContent}`;
+        };
         // - If Time Value Is Zero The Result Is Compared between Input Field And The Word
         // * According To Result (if condition)
         // - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
         // - If False : Random Word Is Back To Words Array and False Result Is Written
-
         if (
           theWord.textContent.trim().toUpperCase() ===
           inputField.value.trim().toUpperCase()
         ) {
-          achievedWords.push(theWord.textContent);
-          console.log(achievedWords);
-          console.log(upComingWords);
+          let gameState = JSON.parse(localStorage.getItem("gameState"));
+          let wordsArray = gameState.wordsArray;
+          // Back Side
+          let index = wordsArray.indexOf(theWord);
+          // *****
+          console.log(index);
+          console.log(wordsArray[index]);
+          // *****
+          // achievedWords.push(wordsArray[index]);
+          // wordsArray.splice(index, 1);
+          // localStorage.setItem("gameState", JSON.stringify(gameState));
+          // Front Side
+          result.classList.add("true");
+          result.classList.add("show");
+          result.textContent = "True";
         } else {
-          console.log(`No !`);
+          // Back Side
+          // Front Side
+          result.classList.add("false");
+          result.classList.add("show");
+          result.textContent = "False";
         }
       }
     };
     let handler = setInterval(counter, 1000);
   });
   // -  Score & Time Left
+  let gameState = JSON.parse(localStorage.getItem("gameState"));
+  let wordsArray = gameState.wordsArray;
+  let achievedWords = gameState.achievedWords;
   got.textContent = `${achievedWords.length} `;
-  total.textContent = `${upComingWords.length} `;
+  total.textContent = `${wordsArray.length} `;
   timeLeft.textContent = `${seconds.innerHTML}`;
+  localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 theGame();
