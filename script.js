@@ -103,15 +103,15 @@ function theGame() {
     let gameState = JSON.parse(localStorage.getItem("gameState"));
     let wordsArray = gameState.wordsArray;
     for (let i = 0; i < wordsArray.length; i++) {
-      if (wordsArray[i].length == 6) {
+      if (wordsArray[i].length === 6) {
         lvl.textContent = `Easy`;
         seconds.textContent = `6`;
         break;
-      } else if (wordsArray[i].length == 8) {
+      } else if (wordsArray[i].length === 8) {
         lvl.textContent = `Medium`;
         seconds.textContent = `7`;
         break;
-      } else if (wordsArray[i].length == 9) {
+      } else if (wordsArray[i].length === 9) {
         lvl.textContent = `Hard`;
         seconds.textContent = `8`;
         break;
@@ -123,7 +123,7 @@ function theGame() {
   //* Events
   startBtn.addEventListener("click", function () {
     // Clear Input Field
-    inputField.value = ""
+    inputField.value = "";
     // Remove show Class From Result If Player Already Played And Wrote Wrong Answer
     result.classList.remove("show");
     // Focus On Input Field
@@ -152,7 +152,7 @@ function theGame() {
       }
     }
     theWord.textContent = getRandomWord(lvl.textContent);
-    console.log(theWord.textContent)
+    console.log(theWord.textContent);
     // - Time Start
     let counter = function () {
       timeLeft.innerHTML -= 1;
@@ -174,21 +174,24 @@ function theGame() {
           var achievedWords = gameState.achievedWords;
           // Back Side
           var index = wordsArray.indexOf(theWord.textContent);
-          achievedWords.push(`${wordsArray[index]}`)
-          wordsArray.splice(index, 1)
+          achievedWords.push(`${wordsArray[index]}`);
+          wordsArray.splice(index, 1);
           localStorage.setItem("gameState", JSON.stringify(gameState));
           // *****
           // Front Side
+          forMessage();
           var gameState = JSON.parse(localStorage.getItem("gameState"));
           var wordsArray = gameState.wordsArray;
           var achievedWords = gameState.achievedWords;
           got.textContent = `${achievedWords.length} `;
+          result.classList.remove("false");
           result.classList.add("true");
           result.classList.add("show");
           result.textContent = "True";
         } else {
           // Back Side
           // Front Side
+          result.classList.remove("true");
           result.classList.add("false");
           result.classList.add("show");
           result.textContent = "False";
