@@ -35,7 +35,18 @@
 //   "something",
 //   "sunflower",
 // ];
-
+//* Getting Needed Elements
+let startBtn = document.querySelector(".start");
+let inputField = document.querySelector(".input");
+let theWord = document.querySelector(".the-word");
+let lvl = document.querySelector(".lvl");
+let seconds = document.querySelector(".seconds");
+let got = document.querySelector(".got");
+let total = document.querySelector(".total");
+let timeLeft = document.querySelector(".timeLeft");
+let result = document.querySelector(".result");
+let congrat = document.querySelector(".congrat");
+let playAgain = document.querySelector(".playAgain");
 // [2] Initializing GameState
 function initializeGame() {
   let gameState = JSON.parse(localStorage.getItem("gameState"));
@@ -64,6 +75,28 @@ function initializeGame() {
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 initializeGame();
+// Message Settings
+function forMessage() {
+  let gameState = JSON.parse(localStorage.getItem("gameState"));
+  let wordsArray = gameState.wordsArray;
+  for (let i = 0; i < wordsArray.length; i++) {
+    if (wordsArray[i].length === 6) {
+      lvl.textContent = `Easy`;
+      seconds.textContent = `6`;
+      break;
+    } else if (wordsArray[i].length === 8) {
+      lvl.textContent = `Medium`;
+      seconds.textContent = `7`;
+      break;
+    } else if (wordsArray[i].length === 9) {
+      lvl.textContent = `Hard`;
+      seconds.textContent = `8`;
+      break;
+    }
+  }
+  localStorage.setItem("gameState", JSON.stringify(gameState));
+}
+forMessage();
 // [2] Appending Words To Body
 let wordsParent = document.querySelector(".up-coming-words");
 function appendingWords() {
@@ -83,131 +116,118 @@ let dataStored = window.localStorage.getItem("words");
 let dataArray = JSON.parse(dataStored);
 let achievedStored = window.localStorage.getItem("achievedWords");
 let achievedArray = JSON.parse(achievedStored);
-// [4] theGame Function
-function theGame() {
-  //* Getting Needed Elements
+//* Start Btn
+function addStartEventListener() {
   let startBtn = document.querySelector(".start");
-  let inputField = document.querySelector(".input");
-  let theWord = document.querySelector(".the-word");
-  let lvl = document.querySelector(".lvl");
-  let seconds = document.querySelector(".seconds");
-  let got = document.querySelector(".got");
-  let total = document.querySelector(".total");
-  let timeLeft = document.querySelector(".timeLeft");
-  let result = document.querySelector(".result");
-  let congrat = document.querySelector(".congrat");
-  let playAgain = document.querySelector(".playAgain");
-  //* Checking Level Through Minumum Word Length And According To Level Message Settings Is Set And Timeout Is Set
-  // Message Settings
-  function forMessage() {
-    let gameState = JSON.parse(localStorage.getItem("gameState"));
-    let wordsArray = gameState.wordsArray;
-    for (let i = 0; i < wordsArray.length; i++) {
-      if (wordsArray[i].length === 6) {
-        lvl.textContent = `Easy`;
-        seconds.textContent = `6`;
-        break;
-      } else if (wordsArray[i].length === 8) {
-        lvl.textContent = `Medium`;
-        seconds.textContent = `7`;
-        break;
-      } else if (wordsArray[i].length === 9) {
-        lvl.textContent = `Hard`;
-        seconds.textContent = `8`;
-        break;
-      }
-    }
-    localStorage.setItem("gameState", JSON.stringify(gameState));
-  }
-  forMessage();
-  //* Events
-  startBtn.addEventListener("click", function () {
-    // Clear Input Field
-    inputField.value = "";
-    // Remove show Class From Result If Player Already Played And Wrote Wrong Answer
-    result.classList.remove("show");
-    // Focus On Input Field
-    inputField.focus();
-    // - Random Word Is Choosen according to condition (6 - 8 - 9) And It Is put Into Avariable that is appended to "the word"
-    function getRandomWord(lvl) {
-      gameState = JSON.parse(localStorage.getItem("gameState"));
-      wordsArray = gameState.wordsArray;
+  startBtn.classList.remove("notExist");
+  startBtn.classList.add("EventExist");
+  startBtn.addEventListener("click", startBtnMission);
+}
 
-      let filteredWords = wordsArray.filter((word) => {
-        if (lvl === "Easy") {
-          return word.length === 6;
-        } else if (lvl === "Medium") {
-          return word.length === 8;
-        } else if (lvl === "Hard") {
-          return word.length === 9;
-        }
-      });
+function removeStartEventListener() {
+  let startBtn = document.querySelector(".start");
+  startBtn.classList.remove("EventExist");
+  startBtn.classList.add("notExist");
+  startBtn.removeEventListener("click", startBtnMission);
+}
+//* Get Random Word
+function getRandomWord(lvl) {
+  gameState = JSON.parse(localStorage.getItem("gameState"));
+  wordsArray = gameState.wordsArray;
 
-      if (filteredWords.length > 0) {
-        let randomIndex = Math.floor(Math.random() * filteredWords.length);
-        return filteredWords[randomIndex];
-      } else {
-        // Handle the case when no words match the level
-        return null;
-      }
+  let filteredWords = wordsArray.filter((word) => {
+    if (lvl === "Easy") {
+      return word.length === 6;
+    } else if (lvl === "Medium") {
+      return word.length === 8;
+    } else if (lvl === "Hard") {
+      return word.length === 9;
     }
-    theWord.textContent = getRandomWord(lvl.textContent);
-    console.log(theWord.textContent);
-    // - Time Start
-    let counter = function () {
-      timeLeft.innerHTML -= 1;
-      if (timeLeft.textContent === "0") {
-        clearInterval(handler);
-        startBtn.onclick = () => {
-          timeLeft.textContent = `${seconds.textContent}`;
-        };
-        // - If Time Value Is Zero The Result Is Compared between Input Field And The Word
-        // * According To Result (if condition)
-        // - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
-        // - If False : Random Word Is Back To Words Array and False Result Is Written
-        if (
-          theWord.textContent.toUpperCase().trim() ===
-          inputField.value.toUpperCase().trim()
-        ) {
-          var gameState = JSON.parse(localStorage.getItem("gameState"));
-          var wordsArray = gameState.wordsArray;
-          var achievedWords = gameState.achievedWords;
-          // Back Side
-          var index = wordsArray.indexOf(theWord.textContent);
-          achievedWords.push(`${wordsArray[index]}`);
-          wordsArray.splice(index, 1);
-          localStorage.setItem("gameState", JSON.stringify(gameState));
-          // *****
-          // Front Side
-          forMessage();
-          var gameState = JSON.parse(localStorage.getItem("gameState"));
-          var wordsArray = gameState.wordsArray;
-          var achievedWords = gameState.achievedWords;
-          got.textContent = `${achievedWords.length} `;
-          result.classList.remove("false");
-          result.classList.add("true");
-          result.classList.add("show");
-          result.textContent = "True";
-        } else {
-          // Back Side
-          // Front Side
-          result.classList.remove("true");
-          result.classList.add("false");
-          result.classList.add("show");
-          result.textContent = "False";
-        }
-      }
-    };
-    let handler = setInterval(counter, 1000);
   });
+
+  if (filteredWords.length > 0) {
+    let randomIndex = Math.floor(Math.random() * filteredWords.length);
+    return filteredWords[randomIndex];
+  } else {
+    // Handle the case when no words match the level
+    return null;
+  }
+}
+// Start Button Mission
+function startBtnMission() {
+  removeStartEventListener();
+  // Set Time Left Value
+  timeLeft.textContent = `${seconds.textContent}`;
+  // Clear Input Field
+  inputField.value = "";
+  // Remove show Class From Result If Player Already Played And Wrote Wrong Answer
+  result.classList.remove("show");
+  // Focus On Input Field
+  inputField.focus();
+  // - Random Word Is Choosen according to condition (6 - 8 - 9) And It Is put Into Avariable that is appended to "the word"
+  theWord.textContent = getRandomWord(lvl.textContent);
+  console.log(theWord.textContent);
+  // - Time Start
+  let counter = function () {
+    timeLeft.textContent -= 1;
+    if (timeLeft.textContent === "0") {
+      addStartEventListener();
+      clearInterval(handler);
+      // startBtn.onclick = () => {
+      //   timeLeft.textContent = `${seconds.textContent}`;
+      // };
+      // - If Time Value Is Zero The Result Is Compared between Input Field And The Word
+      // * According To Result (if condition)
+      // - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
+      // - If False : Random Word Is Back To Words Array and False Result Is Written
+      if (
+        theWord.textContent.toUpperCase().trim() ===
+        inputField.value.toUpperCase().trim()
+      ) {
+        var gameState = JSON.parse(localStorage.getItem("gameState"));
+        var wordsArray = gameState.wordsArray;
+        var achievedWords = gameState.achievedWords;
+        // Back Side
+        var index = wordsArray.indexOf(theWord.textContent);
+        achievedWords.push(`${wordsArray[index]}`);
+        wordsArray.splice(index, 1);
+        localStorage.setItem("gameState", JSON.stringify(gameState));
+        // *****
+        // Front Side
+        forMessage();
+        var gameState = JSON.parse(localStorage.getItem("gameState"));
+        var wordsArray = gameState.wordsArray;
+        var achievedWords = gameState.achievedWords;
+        got.textContent = `${achievedWords.length} `;
+        result.classList.remove("false");
+        result.classList.add("true");
+        result.classList.add("show");
+        result.textContent = "True";
+      } else {
+        // Back Side
+        // Front Side
+        result.classList.remove("true");
+        result.classList.add("false");
+        result.classList.add("show");
+        result.textContent = "False";
+      }
+    }
+  };
+  let handler = setInterval(counter, 1000);
+}
+// [4] theGame Function
+function theGameDetails() {
+  //* Checking Level Through Minumum Word Length And According To Level Message Settings Is Set And Timeout Is Set
+
   // -  Score & Time Left
   let gameState = JSON.parse(localStorage.getItem("gameState"));
   let wordsArray = gameState.wordsArray;
   let achievedWords = gameState.achievedWords;
   got.textContent = `${achievedWords.length} `;
-  total.textContent = `${wordsArray.length} `;
-  timeLeft.textContent = `${seconds.innerHTML}`;
+  total.textContent = `${wordsArray.length + achievedWords.length} `;
+  timeLeft.textContent = `${seconds.textContent}`;
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
-theGame();
+theGameDetails();
+addStartEventListener();
 // The End
