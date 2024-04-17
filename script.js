@@ -1,41 +1,4 @@
-//* Plan
-//[1] Creating up-coming-words In Local Storage
-// [1.1] Creating Achieved Words Array In Local Storage
-// [2] Appending Words To Body
-//// [3] Connect Input Field With The Word
-//// [4] Show Answer (Congratulation If True & Wrong If False)
-// [3] The Game Function
-// * Press Start
-// //- Focus on Input Field
-//// - Random Word Is Choosen according to condition And It Is put Into Avariable that is appended to "the word"
-//// - Score
-//// - Time Start
-////- If Time Value Is Zero The Result Is Compared between Input Field And The Word
-// * According To Result (if condition)
-//// - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
-//// - If False : Random Word Is Back To Words Array and False Result Is Written
-// * If Data Array Is Empty
-// - Play Again Function btn Is Generated : Pushes All Elements Of Achieved To Words Local Storage Array Again And Play Again and Btn Is Hidden
-
-// [1] Creating Words Data
-// let upComingWords = [
-//   "banana",
-//   "purple",
-//   "rocket",
-//   "guitar",
-//   "cookie",
-//   "elephant",
-//   "mountain",
-//   "computer",
-//   "raindrop",
-//   "triangle",
-//   "beautiful",
-//   "landscape",
-//   "telephone",
-//   "something",
-//   "sunflower",
-// ];
-//* Getting Needed Elements
+//*[1] Getting Needed Elements
 let startBtn = document.querySelector(".start");
 let inputField = document.querySelector(".input");
 // Disable Writing In Input Field
@@ -51,7 +14,7 @@ let timeLeft = document.querySelector(".timeLeft");
 let result = document.querySelector(".result");
 let congrat = document.querySelector(".congrat");
 let playAgain = document.querySelector(".playAgain");
-// [2] Initializing GameState
+//*[2] Initializing GameState
 function initializeGame() {
   let gameState = JSON.parse(localStorage.getItem("gameState"));
   if (!gameState) {
@@ -84,7 +47,7 @@ function initializeGame() {
   chechWordsArrayLength();
 }
 initializeGame();
-// Message Settings
+//*[3] Message Settings
 function forMessage() {
   let gameState = JSON.parse(localStorage.getItem("gameState"));
   let wordsArray = gameState.wordsArray;
@@ -106,7 +69,7 @@ function forMessage() {
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
 forMessage();
-// [2] Appending Words To Body
+//*[4] Appending Words To Body
 function appendingWords() {
   // Appending Words Function
   wordsField.innerHTML = "";
@@ -119,7 +82,7 @@ function appendingWords() {
   // localStorage.setItem("gameState", JSON.stringify(gameState)); ###########
 }
 appendingWords();
-//* Start Btn
+//*[5] Start Btn Event Listener
 function addStartEventListener() {
   let startBtn = document.querySelector(".start");
   startBtn.classList.remove("notExist");
@@ -133,11 +96,10 @@ function removeStartEventListener() {
   startBtn.classList.add("notExist");
   startBtn.removeEventListener("click", startBtnMission);
 }
-//* Get Random Word
+//*[6] Get Random Word
 function getRandomWord(lvl) {
   gameState = JSON.parse(localStorage.getItem("gameState"));
   wordsArray = gameState.wordsArray;
-
   let filteredWords = wordsArray.filter((word) => {
     if (lvl === "Easy") {
       return word.length <= 6;
@@ -147,16 +109,14 @@ function getRandomWord(lvl) {
       return word.length >= 9;
     }
   });
-
   if (filteredWords.length > 0) {
     let randomIndex = Math.floor(Math.random() * filteredWords.length);
     return filteredWords[randomIndex];
   } else {
-    // Handle the case when no words match the level
     return null;
   }
 }
-// Start Button Mission
+//*[7] Start Button Mission
 function startBtnMission() {
   // Enable Writing In Input Field
   inputField.removeAttribute("readonly");
@@ -178,11 +138,8 @@ function startBtnMission() {
     if (timeLeft.textContent === "0") {
       addStartEventListener();
       clearInterval(handler);
-      // startBtn.onclick = () => {
-      //   timeLeft.textContent = `${seconds.textContent}`;
-      // };
       // - If Time Value Is Zero The Result Is Compared between Input Field And The Word
-      // * According To Result (if condition)
+      //* According To Result (if condition)
       // - If True : Random Word Is Put To Achieved Array (Local Storage) and True Result Is Written
       // - If False : Random Word Is Back To Words Array and False Result Is Written
       if (
@@ -192,24 +149,23 @@ function startBtnMission() {
         var gameState = JSON.parse(localStorage.getItem("gameState"));
         var wordsArray = gameState.wordsArray;
         var achievedWords = gameState.achievedWords;
-        // Back Side
+        //Back Side
         var index = wordsArray.indexOf(theWord.textContent);
         achievedWords.push(`${wordsArray[index]}`);
         wordsArray.splice(index, 1);
         localStorage.setItem("gameState", JSON.stringify(gameState));
         chechWordsArrayLength();
         appendingWords();
-        // *****
         // Front Side
         forMessage();
         // Disable Writing In Input Field
         inputField.setAttribute("readonly", "");
-        // *Call Control function
-        controlSet();
         result.classList.remove("false");
         result.classList.add("true");
         result.classList.add("show");
         result.textContent = "True";
+        //Call Control function
+        controlSet();
       } else {
         // Back Side
         // Front Side
@@ -224,7 +180,7 @@ function startBtnMission() {
   };
   let handler = setInterval(counter, 1000);
 }
-//* Control Fucntion
+//*[8] Control Fucntion
 function controlSet() {
   // Score
   var gameState = JSON.parse(localStorage.getItem("gameState"));
@@ -234,7 +190,7 @@ function controlSet() {
   // Time
   timeLeft.textContent = `${seconds.textContent}`;
 }
-//* Play Again function
+//*[9] Play Again function
 let playAgainFunction = function () {
   wordsField.innerHTML = "";
   theWord.innerHTML = "";
@@ -247,8 +203,7 @@ let playAgainFunction = function () {
   appendingWords();
   startBtn.addEventListener("click", startBtnMission);
 };
-//* For Play Again If User Finished The game
-
+//If User Finished The game
 function chechWordsArrayLength() {
   var gameState = JSON.parse(localStorage.getItem("gameState"));
   var wordsArray = gameState.wordsArray;
@@ -259,10 +214,9 @@ function chechWordsArrayLength() {
     congrat.classList.add("show");
   }
 }
-
 // Add Event To Play Again btn
 playAgain.addEventListener("click", playAgainFunction);
-// [4] theGameDetails Function
+//*[10] theGameDetails Function
 function theGameDetails() {
   //* Checking Level Through Minumum Word Length And According To Level Message Settings Is Set And Timeout Is Set
   // -  Score & Time Left
@@ -276,4 +230,4 @@ function theGameDetails() {
 }
 theGameDetails();
 addStartEventListener();
-// The End
+//* The End
