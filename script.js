@@ -38,6 +38,8 @@
 //* Getting Needed Elements
 let startBtn = document.querySelector(".start");
 let inputField = document.querySelector(".input");
+// Disable Writing In Input Field
+inputField.setAttribute("readonly", "");
 let wordsField = document.querySelector(".up-coming-words");
 let theWord = document.querySelector(".the-word");
 let message = document.querySelector(".message");
@@ -57,25 +59,26 @@ function initializeGame() {
       wordsArray: [
         "banana",
         "purple",
-        // "rocket",
-        // "guitar",
-        // "cookie",
-        // "elephant",
-        // "mountain",
-        // "computer",
-        // "raindrop",
-        // "triangle",
-        // "beautiful",
-        // "landscape",
-        // "telephone",
-        // "something",
-        // "sunflower",
+        "rocket",
+        "guitar",
+        "cookie",
+        "elephant",
+        "mountain",
+        "computer",
+        "raindrop",
+        "triangle",
+        "beautiful",
+        "landscape",
+        "telephone",
+        "something",
+        "sunflower",
       ],
       achievedWords: [],
     };
   }
   localStorage.setItem("gameState", JSON.stringify(gameState));
   inputField.value = "";
+
   forMessage();
   controlSet();
   chechWordsArrayLength();
@@ -137,11 +140,11 @@ function getRandomWord(lvl) {
 
   let filteredWords = wordsArray.filter((word) => {
     if (lvl === "Easy") {
-      return word.length === 6;
+      return word.length <= 6;
     } else if (lvl === "Medium") {
-      return word.length === 8;
+      return word.length <= 8;
     } else if (lvl === "Hard") {
-      return word.length === 9;
+      return word.length >= 9;
     }
   });
 
@@ -155,6 +158,8 @@ function getRandomWord(lvl) {
 }
 // Start Button Mission
 function startBtnMission() {
+  // Enable Writing In Input Field
+  inputField.removeAttribute("readonly");
   removeStartEventListener();
   // Set Time Left Value
   timeLeft.textContent = `${seconds.textContent}`;
@@ -197,6 +202,8 @@ function startBtnMission() {
         // *****
         // Front Side
         forMessage();
+        // Disable Writing In Input Field
+        inputField.setAttribute("readonly", "");
         // *Call Control function
         controlSet();
         result.classList.remove("false");
@@ -206,6 +213,8 @@ function startBtnMission() {
       } else {
         // Back Side
         // Front Side
+        // Disable Writing In Input Field
+        inputField.setAttribute("readonly", "");
         result.classList.remove("true");
         result.classList.add("false");
         result.classList.add("show");
