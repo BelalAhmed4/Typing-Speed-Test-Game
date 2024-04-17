@@ -76,11 +76,16 @@
 .game .container .start:hover {
   background-color: rgba(52, 207, 111, 0.767);
 }
+.game .container .theWordBox {
+  height: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.1rem;
+  background-color: white;
+}
 .game .container .the-word {
   font-size: 39px;
-  text-align: center;
-  background-color: white;
-  padding: 0.5rem;
   user-select: none;
   color: var(--main-color);
 }
@@ -141,6 +146,11 @@
   color: var(--main-color);
 }
 .game .congrat {
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
   cursor: pointer;
   padding: 1.1rem;
   background-color: rgb(23, 146, 39);
@@ -152,6 +162,9 @@
   border-radius: 0.3rem;
   margin-bottom: 0.3rem;
   display: none;
+}
+.game .congrat img {
+  width: 2rem;
 }
 .game .result {
   cursor: pointer;
@@ -174,7 +187,7 @@
 .game .playAgain {
   cursor: pointer;
   padding: 1.1rem;
-  background-color: rgba(255, 0, 0, 0.774);
+  background-color: rgba(255, 0, 0, 0.747);
   color: white;
   text-align: center;
   font-weight: bold;
@@ -189,5 +202,8 @@
 }
 .show {
   display: block !important;
+}
+.hide {
+  display: none !important;
 }
 /* End TG */

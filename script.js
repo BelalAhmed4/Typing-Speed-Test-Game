@@ -38,7 +38,9 @@
 //* Getting Needed Elements
 let startBtn = document.querySelector(".start");
 let inputField = document.querySelector(".input");
+let wordsField = document.querySelector(".up-coming-words");
 let theWord = document.querySelector(".the-word");
+let message = document.querySelector(".message");
 let lvl = document.querySelector(".lvl");
 let seconds = document.querySelector(".seconds");
 let got = document.querySelector(".got");
@@ -55,24 +57,28 @@ function initializeGame() {
       wordsArray: [
         "banana",
         "purple",
-        "rocket",
-        "guitar",
-        "cookie",
-        "elephant",
-        "mountain",
-        "computer",
-        "raindrop",
-        "triangle",
-        "beautiful",
-        "landscape",
-        "telephone",
-        "something",
-        "sunflower",
+        // "rocket",
+        // "guitar",
+        // "cookie",
+        // "elephant",
+        // "mountain",
+        // "computer",
+        // "raindrop",
+        // "triangle",
+        // "beautiful",
+        // "landscape",
+        // "telephone",
+        // "something",
+        // "sunflower",
       ],
       achievedWords: [],
     };
   }
   localStorage.setItem("gameState", JSON.stringify(gameState));
+  inputField.value = "";
+  forMessage();
+  controlSet();
+  chechWordsArrayLength();
 }
 initializeGame();
 // Message Settings
@@ -98,24 +104,18 @@ function forMessage() {
 }
 forMessage();
 // [2] Appending Words To Body
-let wordsParent = document.querySelector(".up-coming-words");
 function appendingWords() {
+  // Appending Words Function
+  wordsField.innerHTML = "";
   var gameState = JSON.parse(localStorage.getItem("gameState"));
-  console.log(gameState.wordsArray);
   gameState.wordsArray.forEach(function (e) {
     let span = document.createElement("span");
     span.textContent = `${e}`;
-    wordsParent.appendChild(span);
+    wordsField.appendChild(span);
   });
-  localStorage.setItem("gameState", JSON.stringify(gameState));
+  // localStorage.setItem("gameState", JSON.stringify(gameState)); ###########
 }
 appendingWords();
-//*
-// Storing Local Storages Array State Into Variable
-let dataStored = window.localStorage.getItem("words");
-let dataArray = JSON.parse(dataStored);
-let achievedStored = window.localStorage.getItem("achievedWords");
-let achievedArray = JSON.parse(achievedStored);
 //* Start Btn
 function addStartEventListener() {
   let startBtn = document.querySelector(".start");
@@ -192,13 +192,13 @@ function startBtnMission() {
         achievedWords.push(`${wordsArray[index]}`);
         wordsArray.splice(index, 1);
         localStorage.setItem("gameState", JSON.stringify(gameState));
+        chechWordsArrayLength();
+        appendingWords();
         // *****
         // Front Side
         forMessage();
-        var gameState = JSON.parse(localStorage.getItem("gameState"));
-        var wordsArray = gameState.wordsArray;
-        var achievedWords = gameState.achievedWords;
-        got.textContent = `${achievedWords.length} `;
+        // *Call Control function
+        controlSet();
         result.classList.remove("false");
         result.classList.add("true");
         result.classList.add("show");
@@ -215,10 +215,47 @@ function startBtnMission() {
   };
   let handler = setInterval(counter, 1000);
 }
-// [4] theGame Function
+//* Control Fucntion
+function controlSet() {
+  // Score
+  var gameState = JSON.parse(localStorage.getItem("gameState"));
+  var wordsArray = gameState.wordsArray;
+  var achievedWords = gameState.achievedWords;
+  got.textContent = `${achievedWords.length} `;
+  // Time
+  timeLeft.textContent = `${seconds.textContent}`;
+}
+//* Play Again function
+let playAgainFunction = function () {
+  wordsField.innerHTML = "";
+  theWord.innerHTML = "";
+  result.classList.remove("show");
+  message.classList.remove("hide");
+  playAgain.classList.remove("show");
+  congrat.classList.remove("show");
+  localStorage.clear();
+  initializeGame();
+  appendingWords();
+  startBtn.addEventListener("click", startBtnMission);
+};
+//* For Play Again If User Finished The game
+
+function chechWordsArrayLength() {
+  var gameState = JSON.parse(localStorage.getItem("gameState"));
+  var wordsArray = gameState.wordsArray;
+  if (wordsArray.length === 0) {
+    startBtn.removeEventListener("click", startBtnMission);
+    message.classList.add("hide");
+    playAgain.classList.add("show");
+    congrat.classList.add("show");
+  }
+}
+
+// Add Event To Play Again btn
+playAgain.addEventListener("click", playAgainFunction);
+// [4] theGameDetails Function
 function theGameDetails() {
   //* Checking Level Through Minumum Word Length And According To Level Message Settings Is Set And Timeout Is Set
-
   // -  Score & Time Left
   let gameState = JSON.parse(localStorage.getItem("gameState"));
   let wordsArray = gameState.wordsArray;
