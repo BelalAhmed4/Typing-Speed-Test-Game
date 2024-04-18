@@ -77,6 +77,7 @@
   background-color: rgba(52, 207, 111, 0.767);
 }
 .game .container .theWordBox {
+  border-radius: 0.3rem;
   height: 7.5rem;
   display: flex;
   flex-direction: column;
@@ -84,8 +85,18 @@
   padding: 1.1rem;
   background-color: white;
 }
+@media (max-width: 767px) {
+  .game .container .theWordBox {
+    height: 6.5rem;
+  }
+}
+.game .container .theWordBox h3 {
+  font-size: 23px;
+  color: #474747;
+}
 .game .container .the-word {
   font-size: 39px;
+  font-weight: bold;
   user-select: none;
   color: var(--main-color);
 }
@@ -167,7 +178,6 @@
   width: 2rem;
 }
 .game .result {
-  cursor: pointer;
   padding: 1.1rem;
   color: white;
   text-align: center;

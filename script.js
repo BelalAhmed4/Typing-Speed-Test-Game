@@ -42,33 +42,33 @@ function initializeGame() {
   localStorage.setItem("gameState", JSON.stringify(gameState));
   inputField.value = "";
 
-  forMessage();
+  gameInfo();
   controlSet();
   chechWordsArrayLength();
 }
 initializeGame();
 //*[3] Message Settings
-function forMessage() {
+function gameInfo() {
   let gameState = JSON.parse(localStorage.getItem("gameState"));
   let wordsArray = gameState.wordsArray;
   for (let i = 0; i < wordsArray.length; i++) {
     if (wordsArray[i].length === 6) {
       lvl.textContent = `Easy`;
-      seconds.textContent = `6`;
+      seconds.textContent = `5`;
       break;
     } else if (wordsArray[i].length === 8) {
       lvl.textContent = `Medium`;
-      seconds.textContent = `7`;
+      seconds.textContent = `4`;
       break;
     } else if (wordsArray[i].length === 9) {
       lvl.textContent = `Hard`;
-      seconds.textContent = `8`;
+      seconds.textContent = `3`;
       break;
     }
   }
   localStorage.setItem("gameState", JSON.stringify(gameState));
 }
-forMessage();
+gameInfo();
 //*[4] Appending Words To Body
 function appendingWords() {
   // Appending Words Function
@@ -157,7 +157,7 @@ function startBtnMission() {
         chechWordsArrayLength();
         appendingWords();
         // Front Side
-        forMessage();
+        gameInfo();
         // Disable Writing In Input Field
         inputField.setAttribute("readonly", "");
         result.classList.remove("false");
