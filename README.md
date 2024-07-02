@@ -20,7 +20,7 @@ This is a simple typing speed game where users have to type displayed words with
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/typing-speed-game.git
+   git clone https://github.com/BelalAhmed4/typing-speed-game.git
    cd typing-speed-game
    ```
 
